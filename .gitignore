@@ -260,3 +260,6 @@ Web/.vscode/launch.json
 .vscode
 /WebAPI/App_Data
 .DS_Store
+
+# DB files
+TranslationAppDatabase*
