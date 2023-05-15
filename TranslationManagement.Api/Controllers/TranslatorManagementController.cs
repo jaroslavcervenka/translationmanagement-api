@@ -1,68 +1,79 @@
-﻿using System;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Ardalis.GuardClauses;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TranslationManagement.Application.Messaging.Commands;
+using TranslationManagement.Application.Messaging.Commands.Translators;
+using TranslationManagement.Application.Messaging.Queries;
+using TranslationManagement.Application.Messaging.Queries.Translators;
+using TranslationManagement.Core.Dto;
+using TranslationManagement.Core.Enums;
 
-namespace TranslationManagement.Api.Controlers
+namespace TranslationManagement.Api.Controllers
 {
-    [ApiController]
-    [Route("api/TranslatorsManagement/[action]")]
-    public class TranslatorManagementController : ControllerBase
+	[Route("api/translators")]
+    public class TranslatorManagementController : BaseApiController
     {
-        public class TranslatorModel
+	    private readonly ILogger<TranslatorManagementController> _logger;
+
+	    public TranslatorManagementController(
+		    IMediator mediator,
+		    ILogger<TranslatorManagementController> logger) : base(mediator)
         {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public string HourlyRate { get; set; }
-            public string Status { get; set; }
-            public string CreditCardNumber { get; set; }
+	        _logger = Guard.Against.Null(logger);
         }
 
-        public static readonly string[] TranslatorStatuses = { "Applicant", "Certified", "Deleted" };
-
-        private readonly ILogger<TranslatorManagementController> _logger;
-        private AppDbContext _context;
-
-        public TranslatorManagementController(IServiceScopeFactory scopeFactory, ILogger<TranslatorManagementController> logger)
+	    /// <summary>
+	    /// Gets list of translators
+	    /// </summary>
+	    [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+        public Task<ActionResult<IEnumerable<TranslatorDto>>> GetAllTranslators(CancellationToken cancellationToken)
         {
-            _context = scopeFactory.CreateScope().ServiceProvider.GetService<AppDbContext>();
-            _logger = logger;
+	        var request = new GetAllTranslatorsQuery();
+
+	        return SendAsync(request, cancellationToken);
         }
 
-        [HttpGet]
-        public TranslatorModel[] GetTranslators()
+        [HttpGet("search")]
+        public Task<ActionResult<IEnumerable<TranslatorDto>>> GetTranslatorsByName(
+	        string name,
+	        CancellationToken cancellationToken)
         {
-            return _context.Translators.ToArray();
-        }
+	        var request = new GetTranslatorsByNameQuery(name);
 
-        [HttpGet]
-        public TranslatorModel[] GetTranslatorsByName(string name)
-        {
-            return _context.Translators.Where(t => t.Name == name).ToArray();
+            return SendAsync(request, cancellationToken);
         }
 
         [HttpPost]
-        public bool AddTranslator(TranslatorModel translator)
+        public Task<ActionResult<TranslatorDto>> AddTranslator(
+	        TranslatorDto translator,
+	        CancellationToken cancellationToken)
         {
-            _context.Translators.Add(translator);
-            return _context.SaveChanges() > 0;
+	        Guard.Against.Null(translator);
+
+	        var request = new AddTranslatorCommand(translator);
+
+	        return SendAsync(request, cancellationToken);
         }
-        
-        [HttpPost]
-        public string UpdateTranslatorStatus(int Translator, string newStatus = "")
+
+        [HttpPut("{id:int}/status")]
+        public Task<ActionResult<TranslatorDto>> UpdateTranslatorStatus(
+	        int id,
+	        [FromBody]ETranslatorStatus status,
+	        CancellationToken cancellationToken)
         {
-            _logger.LogInformation("User status update request: " + newStatus + " for user " + Translator.ToString());
-            if (TranslatorStatuses.Where(status => status == newStatus).Count() == 0)
-            {
-                throw new ArgumentException("unknown status");
-            }
+            _logger.LogInformation("User status update request: {Status} for user {Id}", status, id);
 
-            var job = _context.Translators.Single(j => j.Id == Translator);
-            job.Status = newStatus;
-            _context.SaveChanges();
+            var request = new UpdateTranslatorStatusCommand(id, status);
 
-            return "updated";
+            return SendAsync(request, cancellationToken);
         }
     }
 }

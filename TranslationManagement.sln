@@ -28,23 +28,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration tests", "Integr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System tests", "System tests", "{618F1645-2022-4122-9F08-28E0B6A88349}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Domain", "TranslationManagement.Domain\TranslationManagement.Domain.csproj", "{6F708427-2B80-454B-86A1-E9A09DA3A55A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Core", "TranslationManagement.Core\TranslationManagement.Core.csproj", "{6F708427-2B80-454B-86A1-E9A09DA3A55A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Application", "TranslationManagement.Application\TranslationManagement.Application.csproj", "{BB7912C5-22C2-480C-ADF6-153EF09BED05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Persistence", "TranslationManagement.Persistence\TranslationManagement.Persistence.csproj", "{0A1CCC93-9B51-4737-B390-AD1CE8C0F3C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Persistence.EF", "TranslationManagement.Persistence.EF\TranslationManagement.Persistence.EF.csproj", "{0A1CCC93-9B51-4737-B390-AD1CE8C0F3C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Application.UnitTest", "tests\unit\TranslationManagement.Application.UnitTest\TranslationManagement.Application.UnitTest.csproj", "{A8AB5196-B690-40C3-BE32-046EA100951B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Persistence.UnitTest", "tests\unit\TranslationManagement.Persistence.UnitTest\TranslationManagement.Persistence.UnitTest.csproj", "{D424BB87-2F90-42B1-891B-56CB428BB627}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Persistence.EF.UnitTest", "tests\unit\TranslationManagement.Persistence.EF.UnitTest\TranslationManagement.Persistence.EF.UnitTest.csproj", "{D424BB87-2F90-42B1-891B-56CB428BB627}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Domain.UnitTest", "tests\unit\TranslationManagement.Domain.UnitTest\TranslationManagement.Domain.UnitTest.csproj", "{D3A89D90-0351-41EA-A351-93A0ADD77D77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Core.UnitTest", "tests\unit\TranslationManagement.Core.UnitTest\TranslationManagement.Core.UnitTest.csproj", "{D3A89D90-0351-41EA-A351-93A0ADD77D77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Api.UnitTest", "tests\unit\TranslationManagement.Api.UnitTest\TranslationManagement.Api.UnitTest.csproj", "{71AF2015-DFE9-4DC4-9913-AC5EF895D126}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.IntegrationTest", "tests\integration\TranslationManagement.IntegrationTest\TranslationManagement.IntegrationTest.csproj", "{BC095E98-AF55-49BA-AF20-19D361107AE7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.SystemTest", "tests\system\TranslationManagement.SystemTest\TranslationManagement.SystemTest.csproj", "{6EBCF9F5-6F10-425C-BE4A-A6AC2EE0951E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Infrastructure", "TranslationManagement.Infrastructure\TranslationManagement.Infrastructure.csproj", "{DFFAF1FF-F64B-49CC-913E-35AE25AC2B97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationManagement.Abstractions", "TranslationManagement.Abstractions\TranslationManagement.Abstractions.csproj", "{7CF4422B-BFBE-4C70-8725-509A862D45C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,6 +100,14 @@ Global
 		{6EBCF9F5-6F10-425C-BE4A-A6AC2EE0951E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EBCF9F5-6F10-425C-BE4A-A6AC2EE0951E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EBCF9F5-6F10-425C-BE4A-A6AC2EE0951E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFFAF1FF-F64B-49CC-913E-35AE25AC2B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFFAF1FF-F64B-49CC-913E-35AE25AC2B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFFAF1FF-F64B-49CC-913E-35AE25AC2B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFFAF1FF-F64B-49CC-913E-35AE25AC2B97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CF4422B-BFBE-4C70-8725-509A862D45C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CF4422B-BFBE-4C70-8725-509A862D45C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CF4422B-BFBE-4C70-8725-509A862D45C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CF4422B-BFBE-4C70-8725-509A862D45C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

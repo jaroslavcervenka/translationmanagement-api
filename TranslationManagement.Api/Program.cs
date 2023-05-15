@@ -1,28 +1,72 @@
-using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using FluentResults;
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using TranslationManagement.Api.Behaviours;
+using TranslationManagement.Api.Converters;
+using TranslationManagement.Api.Extensions;
+using TranslationManagement.Api.Middlewares;
+using TranslationManagement.Api.Validators;
+using TranslationManagement.Application.Extensions;
+using TranslationManagement.Application.Mapping;
+using TranslationManagement.Application.Messaging.Queries;
+using TranslationManagement.Application.Messaging.Queries.Jobs;
+using TranslationManagement.Core.Dto;
+using TranslationManagement.Infrastructure.Extensions;
+using TranslationManagement.Persistence;
+using TranslationManagement.Persistence.Extensions;
 
-namespace TranslationManagement.Api
+namespace TranslationManagement.Api;
+
+
+public class Program
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
+	public static void Main(string[] args)
+	{
+		var builder = WebApplication.CreateBuilder(args);
+		var services = builder.Services;
+		var configuration = builder.Configuration;
 
-            // automatic startup database migration
-            var scope = host.Services.GetService<IServiceScopeFactory>().CreateScope();
-            scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+		services
+			.AddWorkers()
+			.AddApplication()
+			.AddInfrastructure()
+			.AddPersistence(configuration);
 
-            host.Run();
-        }
+		services
+			.AddControllers()
+			.AddJsonOptions(c =>
+			{
+				c.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(new UpperCaseNamingPolicy()));
+			});
+		services
+			.AddSwagger()
+			.AddCorsPolicy()
+			.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<GetAllTranslationJobsQuery>())
+			.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>))
+			.AddAutoMapper(typeof(AppMappingProfile))
+			.AddValidatorsFromAssemblyContaining<CreateJobCommandValidator>();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+		var app = builder.Build();
+		app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+		app
+			.UseSwagger()
+			.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TranslationManagement.Api v1"))
+			.UseCors()
+			.UseRouting()
+			.UseAuthorization();
+		app.MapControllers();
+
+		using (var scope = app.Services.CreateScope())
+		{
+			var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+			db.Database.Migrate();
+		}
+
+		app.Run();
+	}
 }
