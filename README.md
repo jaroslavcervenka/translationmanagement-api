@@ -2,8 +2,10 @@
 
 This is an example of ASP.NET core 7 backend application for translation management.
 It provides some useful concepts and solutions.
+You can find [client implementation](https://github.com/jaroslavcervenka/translationmanagement-api) in my repository as well.
 
 Patterns
+- Clean architecture
 - CQRS - commands and queries
 - Repository
 - Unit of work
@@ -13,7 +15,7 @@ Patterns
 - Testing automation - unit, integration and system tests
 - Producer/consumer - channels
 - Avoid using the exceptions for operation flow
-- Separate domain nad DTO classes
+- Separate domain and DTO objects
 
 Libraries
 - Ardalis.GuardClauses
